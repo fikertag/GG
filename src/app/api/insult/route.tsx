@@ -13,7 +13,7 @@ interface PutRequestBody {
 }
 
 // GET all insults
-export async function GET(_req: NextRequest) {
+export async function GET() {
   await dbConnect();
   try {
     const insults = await Insult.find({});
