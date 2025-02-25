@@ -3,7 +3,7 @@
 import { useComments } from "@/context/Comment";
 import { useInsults } from "@/context/InsultContext";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Comments() {
   const { comments, addComments } = useComments();

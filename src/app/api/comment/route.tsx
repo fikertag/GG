@@ -3,12 +3,18 @@ import dbConnect from "@/lib/dbConnect";
 import Comment from "@/model/Comment";
 import Insult from "@/model/Insult";
 
+// Define types for request bodies
+interface PostRequestBody {
+  text: string;
+  insultId: string;
+}
+
 // POST a new comment
 export async function POST(req: NextRequest) {
   await dbConnect();
 
   try {
-    const { text, insultId } = await req.json(); // Expect text and insultId
+    const { text, insultId } = (await req.json()) as PostRequestBody;
 
     // Validate required fields
     if (!text || !insultId) {
@@ -39,44 +45,36 @@ export async function POST(req: NextRequest) {
     await insult.save();
 
     return NextResponse.json(comment, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json(
-      { message: "Error adding comment", error: error.message },
+      { message: "Error adding comment", error: errorMessage },
       { status: 500 }
     );
   }
 }
 
-// export async function GET(req: NextRequest) {
-//   await dbConnect();
-//   try {
-//     const insultId = req.nextUrl.searchParams.get("insultId");
-
-//     if (!insultId) {
-//       return NextResponse.json(
-//         { message: "Missing insult ID" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const comments = await Comment.find({ insultId });
-
-//     return NextResponse.json(comments, { status: 200 });
-//   } catch (error: any) {
-//     return NextResponse.json(
-//       { message: "Error fetching comments", error: error.message },
-//       { status: 500 }
-//     );
-//   }
-// }
+// GET all comments or comments for a specific insult
 export async function GET(req: NextRequest) {
   await dbConnect();
   try {
-    const comments = await Comment.find({});
-    return NextResponse.json(comments, { status: 200 });
-  } catch (error: any) {
+    const insultId = req.nextUrl.searchParams.get("insultId");
+
+    if (insultId) {
+      // Fetch comments for a specific insult
+      const comments = await Comment.find({ insultId });
+      return NextResponse.json(comments, { status: 200 });
+    } else {
+      // Fetch all comments
+      const comments = await Comment.find({});
+      return NextResponse.json(comments, { status: 200 });
+    }
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json(
-      { message: "Error fetching comments", error: error.message },
+      { message: "Error fetching comments", error: errorMessage },
       { status: 500 }
     );
   }

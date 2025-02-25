@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { console } from "node:inspector/promises";
 
 // Define the type for an insult
 interface Insult {
@@ -177,6 +178,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         prev.map((insult) => (insult._id === insultId ? response.data : insult))
       );
     } catch (error) {
+      console.log(error);
       // Rollback optimistic update if the request fails
       setLikedInsults((prev) =>
         prev.filter((insult) => insult.id !== insultId)
