@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { console } from "node:inspector/promises";
 
 // Define the type for an insult
 interface Insult {
