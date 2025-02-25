@@ -20,7 +20,6 @@ const dbConnect = async (): Promise<void> => {
     console.log("MongoDB connected successfully");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
-    throw new Error("MongoDB connection failed");
   }
 };
 

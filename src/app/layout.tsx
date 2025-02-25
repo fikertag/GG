@@ -1,10 +1,12 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
+import { InsultProvider } from "@/context/InsultContext";
+import { CommentProvider } from "@/context/Comment";
 
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
-  weight: ["400", "500", "600", "700"], // Add necessary weights
+  weight: ["100", "200", "300", "400", "500", "600", "700"], // Add necessary weights
 });
 
 export default function RootLayout({
@@ -14,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <CommentProvider>
+        <InsultProvider>
+          <body className={poppins.className}>{children}</body>
+        </InsultProvider>
+      </CommentProvider>
     </html>
   );
 }

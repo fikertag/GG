@@ -46,3 +46,38 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// export async function GET(req: NextRequest) {
+//   await dbConnect();
+//   try {
+//     const insultId = req.nextUrl.searchParams.get("insultId");
+
+//     if (!insultId) {
+//       return NextResponse.json(
+//         { message: "Missing insult ID" },
+//         { status: 400 }
+//       );
+//     }
+
+//     const comments = await Comment.find({ insultId });
+
+//     return NextResponse.json(comments, { status: 200 });
+//   } catch (error: any) {
+//     return NextResponse.json(
+//       { message: "Error fetching comments", error: error.message },
+//       { status: 500 }
+//     );
+//   }
+// }
+export async function GET(req: NextRequest) {
+  await dbConnect();
+  try {
+    const comments = await Comment.find({});
+    return NextResponse.json(comments, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: "Error fetching comments", error: error.message },
+      { status: 500 }
+    );
+  }
+}
