@@ -53,7 +53,8 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.post("/api/comment", { text, insultId }); // Adjust the API endpoint
       setComments((prev) => [ ...prev, response.data]);
     } catch (error) {
-      console.error("Failed to add insult:", error);
+      console.log("Failed to add insult:", error);
+      throw error;
     }
   };
 

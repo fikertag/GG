@@ -9,11 +9,25 @@ export default function Roasts() {
   const { insults, addInsult } = useInsults();
   const { setIsComment } = useComments();
   const [newInsult, setNewInsult] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addInsult(newInsult);
-    setNewInsult("");
+    setLoading(true);
+    setError(null);
+    addInsult(newInsult)
+      .then(() => {
+        setNewInsult("");
+        setError(null); // Clear any previous error
+      })
+      .catch((err) => {
+        setError("Failed to add insult. Please try again.");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -22,14 +36,41 @@ export default function Roasts() {
         <textarea
           placeholder="write your roast here"
           value={newInsult}
+          required
           onChange={(e) => setNewInsult(e.target.value)}
           className=" bg-transparent border border-gray-500/50 shadow-sm w-full py-1 resize-none px-3 text-[#cbccce] focus:outline-none m-0 pt-2 text-sm rounded-md "
         />
-        <button
+         <button
           type="submit"
-          className="border border-gray-500/50 shadow-sm px-5 py-1 transition-all active:bg-transparent mt-2 tetx-xs rounded-md"
+          disabled={!newInsult.trim() || loading}
+          className={` ${!newInsult.trim() ? "text-[#616163]" : "text-[#cbccce]"  } relative px-6 border flex justify-center items-center gap-2 border-gray-500/50 shadow-sm py-1 transition-all active:bg-transparent mt-2 text-xs rounded-sm`}
         >
           Roast
+          {loading && (
+            <div className="flex justify-center items-center ml-2 absolute right-1">
+              <div
+                style={{
+                  border: "1px solid #1a1a1a",
+                  borderTop: "1px solid #ffffff",
+                  borderRadius: "50%",
+                  width: "10px",
+                  height: "10px",
+                  animation: "spin 2s linear infinite",
+                }}
+              ></div>
+              <style jsx>{`
+                @keyframes spin {
+                  0% {
+                    transform: rotate(0deg);
+                  }
+                  100% {
+                    transform: rotate(360deg);
+                  }
+                }
+              `}</style>
+            </div>
+          )}
+          {error && <div className="text-red-500 ml-2 absolute right-2 text-[8px]">X</div>}
         </button>
       </form>
 

@@ -88,7 +88,8 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.post("/api/insult", { detail }); // Adjust the API endpoint
       setInsults((prev) => [response.data, ...prev]);
     } catch (error) {
-      console.error("Failed to add insult:", error);
+      console.log("Failed to add insult:", error);
+      throw error
     }
   };
 

@@ -1,6 +1,8 @@
+"use client";
+
 import { useInsults } from "@/context/InsultContext";
 import { useComments } from "@/context/Comment";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type Insult = {
   insult: {
@@ -24,6 +26,16 @@ export default function Roast({ insult }: Insult) {
   } = useInsults();
   const { isComment, setIsComment, comments, addComments } = useComments();
   const [newComments, setNewComment] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [newComments]);
 
   let liked: boolean = false;
   let disliked: boolean = false;
@@ -48,8 +60,20 @@ export default function Roast({ insult }: Insult) {
   };
 
   const handleRealAddComments = () => {
-    addComments(newComments, selectedInsult);
-    setNewComment("");
+    setLoading(true);
+    setError(null);
+    addComments(newComments, selectedInsult)
+      .then(() => {
+        setNewComment("");
+        setError(null); // Clear any previous error
+      })
+      .catch((err) => {
+        setError("Failed to add comment. Please try again.");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   liked = likedInsults.some(
@@ -70,7 +94,7 @@ export default function Roast({ insult }: Insult) {
     >
       <div className="text-xs text-gray-500">{new Date(insult.createdAt).toLocaleDateString()}</div>
 
-      <div className="text-sm text-white pr-3 mb-3 font-light">
+      <div className="text-sm text-white pr-3 mb-3 font-light whitespace-pre-wrap">
         {insult.detail}
       </div>
 
@@ -94,7 +118,7 @@ export default function Roast({ insult }: Insult) {
           <div>{insult.like}</div>
         </div>
         <div className="flex items-center gap-1 text-xs">
-        <svg
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -132,7 +156,7 @@ export default function Roast({ insult }: Insult) {
         </div>
       </div>
       {isComment === insult._id && (
-        <div className="px-4 w-full pb-4" onClick={(e) => handleAddComments(e)}>
+        <div className="px-4 w-full pb-2" onClick={(e) => handleAddComments(e)}>
           {comments.map(
             (c) =>
               c.insultId === insult._id && (
@@ -148,18 +172,53 @@ export default function Roast({ insult }: Insult) {
                 </div>
               )
           )}
-          <div className="flex items-center justify-between">
+          <div className="flex items-end justify-between mt-3 ">
             <textarea
+              ref={textareaRef}
               placeholder="Add a comment..."
-              className="bg-transparent border border-[#333] rounded-md px-3 py-2 h-12 text-sm resize-none flex-grow focus:outline-none"
+              className="overflow-y-hidden bg-transparent border border-[#333] rounded-md px-3 py-3 text-sm resize-none flex-grow focus:outline-none"
               value={newComments}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={(e) => {
+                setNewComment(e.target.value);
+                if (textareaRef.current) {
+                  textareaRef.current.style.height = "auto";
+                  textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+                }
+              }}
             />
             <button
               onClick={() => handleRealAddComments()}
-              className=" text-white px-4 py-2 rounded-md ml-2"
+              disabled={!newComments.trim() || loading}
+              className={`relative px-2 pr-5 flex justify-center items-center gap-1 shadow-sm py-1 transition-all active:bg-transparent text-xs rounded-sm ${
+                !newComments.trim() ? "text-[#616163]" : "text-[#cbccce]"
+              }`}
             >
               Send
+              {loading && (
+                <div className="flex justify-center items-center ml-2 absolute right-1">
+                  <div
+                    style={{
+                      border: "1px solid #1a1a1a",
+                      borderTop: "1px solid #ffffff",
+                      borderRadius: "50%",
+                      width: "10px",
+                      height: "10px",
+                      animation: "spin 2s linear infinite",
+                    }}
+                  ></div>
+                  <style jsx>{`
+                    @keyframes spin {
+                      0% {
+                        transform: rotate(0deg);
+                      }
+                      100% {
+                        transform: rotate(360deg);
+                      }
+                    }
+                  `}</style>
+                </div>
+              )}
+              {error && <div className="text-red-500 ml-2 absolute right-2 text-[8px]">X</div>}
             </button>
           </div>
         </div>
