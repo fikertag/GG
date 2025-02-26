@@ -16,7 +16,7 @@ interface PutRequestBody {
 export async function GET() {
   await dbConnect();
   try {
-    const insults = await Insult.find({});
+    const insults = await Insult.find({}).sort({ createdAt: -1 });
     return NextResponse.json(insults, { status: 200 });
   } catch (error: unknown) {
     const errorMessage =

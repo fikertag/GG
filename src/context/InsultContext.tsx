@@ -55,7 +55,6 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const votes = JSON.parse(storedVotes);
 
-        // Ensure votes is an array of objects with { id, type }
         if (
           Array.isArray(votes) &&
           votes.every(

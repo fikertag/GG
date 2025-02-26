@@ -15,6 +15,8 @@ interface Comment {
 // Define the type for the context
 interface CommentContextType {
   comments: Comment[];
+  isComment: string;
+  setIsComment: (id: string) => void;
   fetchComments: () => Promise<void>;
   addComments: (text: string, insultId: string) => Promise<void>;
 }
@@ -22,6 +24,8 @@ interface CommentContextType {
 // Create the context
 const CommentContext = createContext<CommentContextType>({
   comments: [],
+  isComment: "",
+  setIsComment: async () => {},
   fetchComments: async () => {},
   addComments: async () => {},
 });
@@ -31,6 +35,7 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isComment, setIsComment] = useState<string>("");
 
   // Fetch insults from the API
   const fetchComments = async () => {
@@ -46,7 +51,7 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
   const addComments = async (text: string, insultId: string) => {
     try {
       const response = await axios.post("/api/comment", { text, insultId }); // Adjust the API endpoint
-      setComments((prev) => [response.data, ...prev]);
+      setComments((prev) => [ ...prev, response.data]);
     } catch (error) {
       console.error("Failed to add insult:", error);
     }
@@ -57,14 +62,12 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchComments();
   }, []);
 
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
-
   return (
     <CommentContext.Provider
       value={{
         comments,
+        isComment,
+        setIsComment,
         addComments,
         fetchComments,
       }}
