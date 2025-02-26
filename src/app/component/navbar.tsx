@@ -8,12 +8,14 @@ import Link from "next/link";
 export default function NavBar() {
   const { fetchInsults } = useInsults();
   const { fetchComments } = useComments();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   const handleReload = () => {
     fetchComments();
     fetchInsults();
   };
+
+
 
   return (
     <div className="bg-[#1a1a1a] w-full text-[#cbccce] border-b-[0.1px] border-[#2d2d2e] py-4 min-[500px]:px-32 px-4 flex justify-between items-center fixed z-10 left-0">
