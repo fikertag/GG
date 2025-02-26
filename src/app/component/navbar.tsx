@@ -2,7 +2,7 @@
 
 import { useInsults } from "@/context/InsultContext";
 import { useComments } from "@/context/Comment";
-import { useState } from "react";
+// import { useState } from "react";
 import Link from "next/link";
 
 export default function NavBar() {
