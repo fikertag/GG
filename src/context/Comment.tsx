@@ -43,7 +43,7 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.get("/api/comment"); // Adjust the API endpoint
       setComments(response.data);
     } catch (error) {
-      console.error("Failed to fetch insults:", error);
+      throw error;
     }
   };
 
@@ -53,7 +53,6 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.post("/api/comment", { text, insultId }); // Adjust the API endpoint
       setComments((prev) => [ ...prev, response.data]);
     } catch (error) {
-      console.log("Failed to add insult:", error);
       throw error;
     }
   };

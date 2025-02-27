@@ -64,10 +64,10 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         ) {
           setLikedInsults(votes);
         } else {
-          console.error("Invalid format in localStorage.");
+          console.log("Invalid format in localStorage.");
         }
       } catch (error) {
-        console.error("Error parsing liked insults from localStorage:", error);
+        throw error;
       }
     }
   }, []);
@@ -78,7 +78,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.get("/api/insult"); // Adjust the API endpoint
       setInsults(response.data);
     } catch (error) {
-      console.error("Failed to fetch insults:", error);
+      throw error;
     }
   };
 
@@ -88,7 +88,6 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await axios.post("/api/insult", { detail }); // Adjust the API endpoint
       setInsults((prev) => [response.data, ...prev]);
     } catch (error) {
-      console.log("Failed to add insult:", error);
       throw error
     }
   };
@@ -127,7 +126,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         prev.map((insult) => (insult._id === insultId ? response.data : insult))
       );
     } catch (error) {
-      console.error("Failed to like insult:", error);
+      
 
       // Rollback optimistic update if the request fails
       setLikedInsults((prev) =>
@@ -147,7 +146,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         (insult) => insult.id !== insultId
       );
       localStorage.setItem("voted", JSON.stringify(updatedLikedInsults)); // Update localStorage after rollback
-    }
+      throw error;}
   };
 
   // Dislike an insult
@@ -177,7 +176,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         prev.map((insult) => (insult._id === insultId ? response.data : insult))
       );
     } catch (error) {
-      console.log(error);
+      
       // Rollback optimistic update if the request fails
       setLikedInsults((prev) =>
         prev.filter((insult) => insult.id !== insultId)
@@ -195,7 +194,9 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
         (insult) => insult.id !== insultId
       );
       localStorage.setItem("voted", JSON.stringify(updatedLikedInsults)); // Update localStorage after rollback
-    }
+   throw error;
+   }
+    
   };
 
   // Fetch insults on component mount
