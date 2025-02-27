@@ -34,7 +34,7 @@ export default function Roasts() {
     <div onClick={() => setIsComment("")} className="text-[#cbccce] pt-16 px-3 w-full ">
       <form onSubmit={handlesubmit} className=" ">
         <textarea
-          placeholder="write your roast here"
+          placeholder="write your gossip here"
           value={newInsult}
           required
           onChange={(e) => setNewInsult(e.target.value)}
@@ -43,9 +43,9 @@ export default function Roasts() {
          <button
           type="submit"
           disabled={!newInsult.trim() || loading}
-          className={` ${!newInsult.trim() ? "text-[#616163]" : "text-[#cbccce]"  } relative px-6 border flex justify-center items-center gap-2 border-gray-500/50 shadow-sm py-1 transition-all active:bg-transparent mt-2 text-xs rounded-sm`}
+          className={` ${!newInsult.trim() ? "text-[#616163]" : "text-[#cbccce]"  } relative px-6 border flex justify-center items-center gap-2 border-gray-500/50 shadow-sm py-2 transition-all active:bg-transparent mt-2 text-sm rounded-sm`}
         >
-          Roast
+          Gossip
           {loading && (
             <div className="flex justify-center items-center ml-2 absolute right-1">
               <div
