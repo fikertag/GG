@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import NavBar from "../component/navbar";
@@ -20,16 +20,16 @@ export default function Gossip() {
 
   return (
     <div className="bg-[#1a1a1a] max-w-[700px] flex mx-auto justify-center ">
-    <NavBar />
-    <div className="py-5 flex justify-between relative">
-      {loading ? (
-        <div className="flex justify-center items-center h-screen text-white text-2xl">
-          Loading ... 
-        </div>
-      ) : (
-        <Roasts />
-      )}
+      <NavBar />
+      <div className="py-5 flex justify-between relative w-[100%]">
+        {loading ? (
+          <div className="flex justify-center items-center h-screen text-white w-full text-2xl">
+            Loading ...
+          </div>
+        ) : (
+          <Roasts />
+        )}
+      </div>
     </div>
-  </div>
   );
 }

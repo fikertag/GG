@@ -47,6 +47,21 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE() {
+  await dbConnect();
+  try {
+    const insults = await Comment.deleteMany({});
+    return NextResponse.json(insults, { status: 200 });
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json(
+      { message: "Error fetching insults", error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(req: NextRequest) {
   await dbConnect();
   try {

@@ -17,8 +17,7 @@ export default function Home() {
         Share your Gossip Anonymously
       </div>
       <div className="text-center text-gray-400 max-w-lg">
-        The #1 platform for anonymous sharing. Express yourself freely and
-        connect with others through shared experiences.
+      Talk about your teachers, your crush, and everything in between. Stay anonymous, spill the tea, and enjoy the buzz!
       </div>
       <Link
         href={"/gossip"}
@@ -26,7 +25,7 @@ export default function Home() {
       >
         Get Started
       </Link>
-      <div className="mt-8 text-gray-500">Trusted by students</div>
+      <div className="mt-8 text-gray-500">Trusted by HU students</div>
     </div>
   );
 }

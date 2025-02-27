@@ -31,7 +31,7 @@ export default function Roasts() {
   };
 
   return (
-    <div onClick={() => setIsComment("")} className="text-[#cbccce] pt-16 px-3 w-full ">
+    <div onClick={() => setIsComment("")} className="text-[#cbccce] pt-16 px-10 w-full ">
       <form onSubmit={handlesubmit} className=" ">
         <textarea
           placeholder="write your gossip here"
