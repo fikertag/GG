@@ -31,7 +31,10 @@ export default function Roasts() {
   };
 
   return (
-    <div onClick={() => setIsComment("")} className="text-[#cbccce] pt-16 px-10 w-full ">
+    <div
+      onClick={() => setIsComment("")}
+      className="text-[#cbccce] pt-16 px-4 w-full "
+    >
       <form onSubmit={handlesubmit} className=" ">
         <textarea
           placeholder="write your gossip here"
@@ -40,10 +43,12 @@ export default function Roasts() {
           onChange={(e) => setNewInsult(e.target.value)}
           className=" bg-transparent border border-gray-500/50 shadow-sm w-full py-1 resize-none px-3 text-[#cbccce] focus:outline-none m-0 pt-2 text-sm rounded-md "
         />
-         <button
+        <button
           type="submit"
           disabled={!newInsult.trim() || loading}
-          className={` ${!newInsult.trim() ? "text-[#616163]" : "text-[#cbccce]"  } relative px-6 border flex justify-center items-center gap-2 border-gray-500/50 shadow-sm py-2 transition-all active:bg-transparent mt-2 text-sm rounded-sm`}
+          className={` ${
+            !newInsult.trim() ? "text-[#616163]" : "text-[#cbccce]"
+          } relative px-6 border flex justify-center items-center gap-2 border-gray-500/50 shadow-sm py-2 transition-all active:bg-transparent mt-2 text-sm rounded-sm`}
         >
           Gossip
           {loading && (
@@ -70,7 +75,11 @@ export default function Roasts() {
               `}</style>
             </div>
           )}
-          {error && <div className="text-red-500 ml-2 absolute right-2 text-[8px]">X</div>}
+          {error && (
+            <div className="text-red-500 ml-2 absolute right-2 text-[8px]">
+              X
+            </div>
+          )}
         </button>
       </form>
 
