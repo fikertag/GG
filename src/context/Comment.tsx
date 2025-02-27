@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { pusherClient } from "@/lib/pusher";
 
-// Define the type for an insult
 interface Comment {
   _id: string;
   text: string;
@@ -12,7 +12,6 @@ interface Comment {
   updatedAt: string;
 }
 
-// Define the type for the context
 interface CommentContextType {
   comments: Comment[];
   isComment: string;
@@ -21,46 +20,58 @@ interface CommentContextType {
   addComments: (text: string, insultId: string) => Promise<void>;
 }
 
-// Create the context
 const CommentContext = createContext<CommentContextType>({
   comments: [],
   isComment: "",
-  setIsComment: async () => {},
+  setIsComment: () => {},
   fetchComments: async () => {},
   addComments: async () => {},
 });
 
-// Create the provider component
-export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isComment, setIsComment] = useState<string>("");
 
-  // Fetch insults from the API
-  const fetchComments = async () => {
-    try {
-      const response = await axios.get("/api/comment"); // Adjust the API endpoint
-      setComments(response.data);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // Add a new insult
-  const addComments = async (text: string, insultId: string) => {
-    try {
-      const response = await axios.post("/api/comment", { text, insultId }); // Adjust the API endpoint
-      setComments((prev) => [ ...prev, response.data]);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // Fetch insults on component mount
+  // Fetch comments on component mount
   useEffect(() => {
     fetchComments();
   }, []);
+
+  // Initialize Pusher client
+  useEffect(() => {
+    const channel = pusherClient.subscribe("comments");
+
+    // Bind to the "new-comment" event
+    channel.bind("new-comment", (newComment: Comment) => {
+      setComments((prev) => [...prev, newComment]);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      channel.unbind("new-comment");
+      pusherClient.unsubscribe("comments");
+    };
+  }, []);
+
+  // Fetch comments from the API
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get("/api/comment");
+      setComments(response.data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  // Add a new comment
+  const addComments = async (text: string, insultId: string) => {
+    try {
+      await axios.post("/api/comment", { text, insultId });
+      // Do not manually update the state here. Let Pusher handle it.
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
 
   return (
     <CommentContext.Provider
@@ -77,11 +88,10 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-// Custom hook to consume the context
 export const useComments = () => {
   const context = useContext(CommentContext);
   if (!context) {
-    throw new Error("useInsults must be used within an InsultProvider");
+    throw new Error("useComments must be used within a CommentProvider");
   }
   return context;
 };
