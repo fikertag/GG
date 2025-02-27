@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import { pusherClient } from "@/lib/pusher";
 
 // Define the type for an insult
 interface Insult {
@@ -72,6 +73,50 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  useEffect(() => {
+    const channel = pusherClient.subscribe("insults");
+
+    // Listen for "update-insult" events
+    channel.bind("update-insult", (updatedInsult: Insult) => {
+      setInsults((prev) =>
+        prev.map((insult) =>
+          insult._id === updatedInsult._id ? updatedInsult : insult
+        )
+      );
+    });
+
+    // Cleanup on unmount
+    return () => {
+      channel.unbind("update-insult");
+      pusherClient.unsubscribe("insults");
+    };
+  }, []);
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe("insults");
+  
+    // Listen for "update-insult" events
+    channel.bind("update-insult", (updatedInsult: Insult) => {
+      setInsults((prev) =>
+        prev.map((insult) =>
+          insult._id === updatedInsult._id ? updatedInsult : insult
+        )
+      );
+    });
+  
+    // Listen for "new-insult" events
+    channel.bind("new-insult", (newInsult: Insult) => {
+      setInsults((prev) => [newInsult, ...prev]); // Add the new insult to the top of the list
+    });
+  
+    // Cleanup on unmount
+    return () => {
+      channel.unbind("update-insult");
+      channel.unbind("new-insult");
+      pusherClient.unsubscribe("insults");
+    };
+  }, []);
+
   // Fetch insults from the API
   const fetchInsults = async () => {
     try {
@@ -85,8 +130,7 @@ export const InsultProvider: React.FC<{ children: React.ReactNode }> = ({
   // Add a new insult
   const addInsult = async (detail: string) => {
     try {
-      const response = await axios.post("/api/insult", { detail }); // Adjust the API endpoint
-      setInsults((prev) => [response.data, ...prev]);
+      await axios.post("/api/insult", { detail }); // Adjust the API endpoint
     } catch (error) {
       throw error
     }

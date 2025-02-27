@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Insult from "@/model/Insult";
+import { pusherServer } from "@/lib/pusher";
 
 // Define types for request bodies
 interface PostRequestBody {
@@ -29,6 +30,7 @@ export async function GET() {
 }
 
 // POST a new insult
+// POST a new insult
 export async function POST(req: NextRequest) {
   await dbConnect();
   try {
@@ -44,6 +46,10 @@ export async function POST(req: NextRequest) {
 
     // Create a new insult
     const insult = await Insult.create({ detail });
+
+    // Emit a Pusher event to notify clients about the new insult
+    await pusherServer.trigger("insults", "new-insult", insult);
+
     return NextResponse.json(insult, { status: 201 });
   } catch (error: unknown) {
     const errorMessage =
@@ -55,6 +61,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// PUT to like or dislike an insult
 // PUT to like or dislike an insult
 export async function PUT(req: NextRequest) {
   await dbConnect();
@@ -94,6 +101,9 @@ export async function PUT(req: NextRequest) {
 
     // Save the updated insult
     await insult.save();
+
+    // Emit a Pusher event to notify clients about the updated insult
+    await pusherServer.trigger("insults", "update-insult", insult);
 
     return NextResponse.json(insult, { status: 200 });
   } catch (error: unknown) {
