@@ -140,16 +140,16 @@ export async function PUT(req: NextRequest) {
     }
 
     // Increment the like or dislike count based on the action
-    if (action === "like") {
-      insult.like += 1;
-    } else if (action === "dislike") {
-      insult.dislike += 1;
-    } else {
-      return NextResponse.json(
-        { message: "Invalid action, must be 'like' or 'dislike'" },
-        { status: 400 }
-      );
-    }
+    // if (action === "like") {
+    //   insult.like += 1;
+    // } else if (action === "dislike") {
+    //   insult.dislike += 1;
+    // } else {
+    //   return NextResponse.json(
+    //     { message: "Invalid action, must be 'like' or 'dislike'" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Check for duplicate like/dislike
     if (action === "like") {
