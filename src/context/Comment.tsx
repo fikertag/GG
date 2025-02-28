@@ -28,7 +28,9 @@ const CommentContext = createContext<CommentContextType>({
   addComments: async () => {},
 });
 
-export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isComment, setIsComment] = useState<string>("");
 
@@ -63,7 +65,7 @@ export const CommentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  // Add a new comment
+  // Add a new comment ll
   const addComments = async (text: string, insultId: string) => {
     try {
       await axios.post("/api/comment", { text, insultId });
