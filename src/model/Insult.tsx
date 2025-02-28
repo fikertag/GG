@@ -6,6 +6,8 @@ export interface IInsult extends Document {
   comments: mongoose.Schema.Types.ObjectId[]; // Array of Comment references
   like: number;
   dislike: number;
+  likedBy: string[];
+  dislikedBy: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,6 +18,8 @@ const InsultSchema = new Schema<IInsult>(
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }], // Array of Comment references
     like: { type: Number, default: 0 },
     dislike: { type: Number, default: 0 },
+    likedBy: [{ type: String }],
+    dislikedBy: [{ type: String }],
   },
   { timestamps: true }
 );

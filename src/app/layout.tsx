@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { InsultProvider } from "@/context/InsultContext";
 import { CommentProvider } from "@/context/Comment";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ export default function RootLayout({
       <CommentProvider>
         <InsultProvider>
           <body className={inter.className}>{children}</body>
+          <Analytics />
         </InsultProvider>
       </CommentProvider>
     </html>
