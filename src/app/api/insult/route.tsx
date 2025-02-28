@@ -6,9 +6,9 @@ import crypto from "crypto";
 import RateLimit from "@/model/RateLimit";
 
 // Define types for request bodies
-interface PostRequestBody {
-  detail: string;
-}
+// interface PostRequestBody {
+//   detail: string;
+// }
 
 interface PutRequestBody {
   insultId: string;
